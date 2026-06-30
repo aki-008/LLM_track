@@ -1,0 +1,28 @@
+[project]
+name = "llm"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "datasets>=5.0.0",
+    "jupyter>=1.1.1",
+    "matplotlib>=3.11.0",
+    "numpy>=2.5.0",
+    "scipy>=1.18.0",
+    "tiktoken>=0.13.0",
+    "torch>=2.5.1",
+    "torchaudio>=2.5.1",
+    "torchvision>=0.20.1",
+    "tqdm>=4.68.3",
+    "transformers>=5.12.1",
+]
+[[tool.uv.index]]
+name = "pytorch-cu121"
+url = "https://download.pytorch.org/whl/cu121"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu121" }
+torchvision = { index = "pytorch-cu121" }
+torchaudio = { index = "pytorch-cu121" }
