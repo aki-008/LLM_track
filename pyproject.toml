@@ -7,7 +7,9 @@ requires-python = ">=3.12"
 dependencies = [
     "datasets>=5.0.0",
     "jupyter>=1.1.1",
+    "jupytext>=1.19.4",
     "matplotlib>=3.11.0",
+    "nbstripout>=0.9.1",
     "numpy>=2.5.0",
     "scipy>=1.18.0",
     "tiktoken>=0.13.0",
