@@ -11,6 +11,7 @@ dependencies = [
     "matplotlib>=3.11.0",
     "nbstripout>=0.9.1",
     "numpy>=2.5.0",
+    "plotly>=6.9.0",
     "scipy>=1.18.0",
     "tiktoken>=0.13.0",
     "torch>=2.5.1",
