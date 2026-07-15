@@ -6,7 +6,7 @@ The whole thing runs in ~25 seconds on my laptop.
 import os
 import time
 # from minbpe import BasicTokenizer, RegexTokenizer
-from regex_tokenizer import Re_tokenizer
+from regex_tokenizer import BPETokenizer
 
 # open some text and train a vocab of 512 tokens
 text = open("taylorswift.txt", "r", encoding="utf-8").read()
@@ -15,7 +15,7 @@ text = open("taylorswift.txt", "r", encoding="utf-8").read()
 os.makedirs("models", exist_ok=True)
 
 t0 = time.time()
-for TokenizerClass, name in zip([Re_tokenizer], ["basic"]):
+for TokenizerClass, name in zip([BPETokenizer], ["bpe"]):
 
     # construct the Tokenizer object and kick off verbose training
     tokenizer = TokenizerClass()
