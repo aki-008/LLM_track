@@ -8,6 +8,13 @@ GPT2_SPLIT_PATTERN = r"""'(?:[sdmt]|ll|ve|re)| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}
 # GPT-4 style pre-tokenization regex: refines GPT-2's pattern (case-insensitive contractions,
 # caps numbers to 1-3 digits, handles newlines specially, uses possessive quantifiers for speed).
 GPT4_SPLIT_PATTERN = r"""'(?i:[sdmt]|ll|ve|re)|[^\r\n\p{L}\p{N}]?+\p{L}+|\p{N}{1,3}| ?[^\s\p{L}\p{N}]++[\r\n]*|\s*[\r\n]|\s+(?!\S)|\s+"""
+GPT4_SPECIAL_TOKENS = {
+    '<|endoftext|>': 100257,
+    '<|fim_prefix|>': 100258,
+    '<|fim_middle|>': 100259,
+    '<|fim_suffix|>': 100260,
+    '<|endofprompt|>': 100276
+}
 
 
 def get_stats(ids, count=None):
@@ -73,6 +80,7 @@ class BPETokenizer:
         self.special_tokens = {}       # str -> int                 # registry of special tokens (e.g. "<|endoftext|>") to their reserved ids
         self.inverse_special_tokens = {}  # int -> str               # reverse lookup: id -> special token string, used during decode
         self.vocab = self._build_vocab()                            # build the id -> bytes vocabulary from (currently empty) merges/specials
+        self.register_special_tokens(GPT4_SPECIAL_TOKENS)
 
     # ------------------------------------------------------------------
     # Training
