@@ -12,6 +12,7 @@ dependencies = [
     "nbstripout>=0.9.1",
     "numpy>=2.5.0",
     "plotly>=6.9.0",
+    "pytest>=9.1.1",
     "regex>=2026.5.9",
     "scipy>=1.18.0",
     "sentencepiece>=0.2.2",
