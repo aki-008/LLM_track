@@ -19,7 +19,7 @@ for TokenizerClass, name in zip([Re_tokenizer], ["basic"]):
 
     # construct the Tokenizer object and kick off verbose training
     tokenizer = TokenizerClass()
-    tokenizer.train(text, 512, verbose=True)
+    tokenizer.train(text, 4096, verbose=True)
     # writes two files in the models directory: name.model, and name.vocab
     prefix = os.path.join("models", name)
     tokenizer.save(prefix)
