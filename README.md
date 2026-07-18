@@ -2,6 +2,14 @@
 
 This repository documents my journey of learning, experimenting with, and implementing Large Language Models (LLMs).
 
+**Notebook Viewer**: View interactive code diff notebooks at https://app.reviewnb.com/aki-008/LLM_track/
+
+**Quick Links**:
+- Main notebook viewer above
+- Experiment implementations in individual folders
+
+Instead of only using existing frameworks and APIs, I want to understand how modern LLMs work under the hood by building, testing, and improving different components myself.
+
 Instead of only using existing frameworks and APIs, I want to understand how modern LLMs work under the hood by building, testing, and improving different components myself.
 
 The repository includes:
