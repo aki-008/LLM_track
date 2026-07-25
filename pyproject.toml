@@ -17,6 +17,7 @@ dependencies = [
     "regex>=2026.5.9",
     "scipy>=1.18.0",
     "sentencepiece>=0.2.2",
+    "tensorflow>=2.21.0",
     "tiktoken>=0.13.0",
     "torch>=2.5.1",
     "torchaudio>=2.5.1",
