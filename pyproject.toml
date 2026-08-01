@@ -36,3 +36,9 @@ explicit = true
 torch = { index = "pytorch-cu121" }
 torchvision = { index = "pytorch-cu121" }
 torchaudio = { index = "pytorch-cu121" }
+
+[tool.uv.workspace]
+members = [
+    "CuPy_dev",
+    "CuPy_dev/CuPy_dev",
+]
