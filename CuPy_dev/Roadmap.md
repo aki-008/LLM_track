@@ -15,13 +15,13 @@ Build a PyTorch-like deep learning framework on top of CuPy and use it to train 
 
 ---
 
-# Stage 1: Autograd Engine
+## Stage 1: Autograd Engine
 
-## Goal
+### Goal
 
 Implement a reverse-mode automatic differentiation engine similar to Micrograd.
 
-Example:
+**Example:**
 
 ```python
 a = Tensor(...)
@@ -33,650 +33,352 @@ d = c + a
 loss = d.sum()
 
 loss.backward()
+```
 
-Components
+### Components
 
-Tensor Class
+**Tensor Class**
+- `data`
+- `grad`
+- `requires_grad`
+- `parents`
+- operation metadata
+- backward function
 
-data
+**Graph Engine**
+- Computation graph construction
+- Topological sorting
+- Reverse-mode backpropagation
 
-grad
+**Operations**
+- Addition (`+`)
+- Subtraction (`-`)
+- Multiplication (`*`)
+- Division (`/`)
+- Power (`**`)
+- Sum
+- Mean
+- Matrix multiplication
+- Transpose
+- Reshape
+- Exp
+- Log
 
-requires_grad
+### Verification
 
-parents
+For every operation, compare `torch_grad` vs `your_grad`.
 
-operation metadata
+**Expected:** `max_error < 1e-6`
 
-backward function
+### Checkpoint
 
-
-Graph Engine
-
-Computation graph construction
-
-Topological sorting
-
-Reverse-mode backpropagation
-
-
-Operations
-
-Addition (+)
-
-Subtraction (-)
-
-Multiplication (*)
-
-Division (/)
-
-Power (**)
-
-Sum
-
-Mean
-
-Matrix Multiplication
-
-Transpose
-
-Reshape
-
-Exp
-
-Log
-
-
-Verification
-
-For every operation:
-
-torch_grad
-vs
-your_grad
-
-Expected:
-
-max_error < 1e-6
-
-Checkpoint
-
-Train XOR successfully.
-
-If XOR does not converge, do not proceed further.
-
+Train XOR successfully. **If XOR does not converge, do not proceed further.**
 
 ---
 
-Stage 2: Neural Network Framework
+## Stage 2: Neural Network Framework
 
-Goal
+### Goal
 
 Build the basic abstractions required for neural networks.
 
-Core Classes
+**Core Classes**
+- `Module`
+- `Parameter`
+- `Sequential`
 
-Module
-Parameter
-Sequential
+**Layers**
+- `Linear`
+- `Embedding`
+- `LayerNorm`
+- `GELU`
+- `Dropout`
 
-Layers
+### Important Learning Areas
 
-Linear
-Embedding
-LayerNorm
-GELU
-Dropout
+**LayerNorm** — implement manually. Understand:
+- Mean
+- Variance
+- Epsilon stabilization
 
-Important Learning Areas
+**GELU** — implement from the equation. Understand why GPT uses GELU instead of ReLU.
 
-LayerNorm
+### Verification
 
-Implement manually.
+For each layer, compare `torch_output` vs `your_output` and `torch_grad` vs `your_grad`.
 
-Understand:
-
-Mean
-
-Variance
-
-Epsilon stabilization
-
-
-GELU
-
-Implement from equation.
-
-Understand why GPT uses GELU instead of ReLU.
-
-Verification
-
-For each layer:
-
-torch_output
-vs
-your_output
-
-and
-
-torch_grad
-vs
-your_grad
-
-Expected:
-
-max_error < 1e-5
-
+**Expected:** `max_error < 1e-5`
 
 ---
 
-Stage 3: Optimizers
+## Stage 3: Optimizers
 
-Goal
+### Goal
 
 Implement optimization algorithms from scratch.
 
-Implement
+**Implement**
+- SGD
+- Adam
+- AdamW
 
-SGD
-Adam
-AdamW
+### Concepts to Understand
+- Momentum
+- Exponential moving average
 
-Concepts to Understand
+**Adam**
+- First moment estimate
+- Second moment estimate
+- Bias correction
 
-Momentum
+**AdamW**
+- Decoupled weight decay
 
-Exponential Moving Average
+### Verification
 
-
-Adam
-
-First moment estimate
-
-Second moment estimate
-
-Bias correction
-
-
-AdamW
-
-Decoupled weight decay
-
-
-Verification
-
-Train a small MLP.
-
-Compare:
-
-PyTorch loss curve
-vs
-Your framework loss curve
-
+Train a small MLP. Compare PyTorch loss curve vs your framework's loss curve.
 
 ---
 
-Stage 4: GPT Building Blocks
+## Stage 4: GPT Building Blocks
 
-Goal
+### Goal
 
 Implement all transformer primitives.
 
+### Causal Mask
 
----
+Create a mask with `-∞` above the diagonal.
 
-Causal Mask
+**Purpose:** prevent tokens from attending to future tokens.
 
-Create:
+### Self-Attention
 
--∞ above diagonal
+**Pipeline:**
 
-Purpose:
-
-Prevent tokens from attending to future tokens.
-
-
----
-
-Self Attention
-
-Pipeline:
-
-QKᵀ
-↓
-Scale
-↓
-Mask
-↓
-Softmax
-↓
-Multiply by V
+```
+QKᵀ → Scale → Mask → Softmax → Multiply by V
+```
 
 Implement manually.
 
+### Multi-Head Attention
 
----
+**Implement:**
+- Q projection
+- K projection
+- V projection
+- Head splitting
+- Attention per head
+- Head concatenation
+- Output projection
 
-Multi-Head Attention
+### Feed-Forward Network
 
-Implement:
+**Architecture:**
 
-Q Projection
-K Projection
-V Projection
+```
+Linear → GELU → Linear
+```
 
-Head Splitting
-
-Attention Per Head
-
-Head Concatenation
-
-Output Projection
-
-
----
-
-Feed Forward Network
-
-Architecture:
-
-Linear
-↓
-GELU
-↓
-Linear
-
-
----
-
-Verification
+### Verification
 
 Compare outputs and gradients against PyTorch.
 
-Expected:
-
-max_error < 1e-5
-
+**Expected:** `max_error < 1e-5`
 
 ---
 
-Stage 5: Transformer Block
+## Stage 5: Transformer Block
 
-Goal
+### Goal
 
 Assemble a complete transformer block.
 
-Architecture:
+**Architecture:**
 
-LayerNorm
-↓
-Multi-Head Attention
-↓
-Residual Connection
+```
+LayerNorm → Multi-Head Attention → Residual Connection
+LayerNorm → Feed-Forward Network → Residual Connection
+```
 
-LayerNorm
-↓
-Feed Forward Network
-↓
-Residual Connection
+### Verification
 
-Verification
+Initialize identical weights in PyTorch and your framework, then compare outputs.
 
-Initialize identical weights in:
-
-PyTorch
-
-Your Framework
-
-
-Compare outputs.
-
-Expected:
-
-max_error < 1e-5
-
+**Expected:** `max_error < 1e-5`
 
 ---
 
-Stage 6: GPT Architecture
+## Stage 6: GPT Architecture
 
-Goal
+### Goal
 
-Build GPT-2 124M architecture.
+Build the GPT-2 124M architecture.
 
-Components
+### Components
 
-Token Embedding
+- **Token embedding** — maps token IDs to vectors
+- **Positional embedding** — learned positional embeddings
+- **Transformer stack** — 12 transformer blocks
+- **Final LayerNorm**
+- **Language modeling head** — projects hidden states to vocabulary logits
 
-Maps token IDs to vectors.
+### GPT-124M Configuration
 
-Positional Embedding
-
-Learned positional embeddings.
-
-Transformer Stack
-
-12 Transformer Blocks
-
-Final LayerNorm
-
-Language Modeling Head
-
-Projects hidden states to vocabulary logits.
-
+| Parameter | Value |
+|---|---|
+| Layers | 12 |
+| Heads | 12 |
+| Embedding size | 768 |
+| Context length | 1024 |
 
 ---
 
-GPT-124M Configuration
+## Stage 7: Weight Loading Verification
 
-Layers: 12
-Heads: 12
-Embedding Size: 768
-Context Length: 1024
-
-
----
-
-Stage 7: Weight Loading Verification
-
-Goal
+### Goal
 
 Verify implementation correctness before training.
 
-Load pretrained GPT-2 weights.
+Load pretrained GPT-2 weights and compare GPT-2 logits vs your logits for identical inputs.
 
-Compare:
+### Why This Matters
 
-GPT-2 logits
-vs
-Your logits
-
-For identical inputs.
-
-Why This Matters
-
-If outputs match:
-
-Attention is correct
-
-LayerNorm is correct
-
-Residuals are correct
-
-Embeddings are correct
-
-Architecture is correct
-
+If outputs match, it confirms:
+- Attention is correct
+- LayerNorm is correct
+- Residuals are correct
+- Embeddings are correct
+- Architecture is correct
 
 This is the strongest correctness check available.
 
-
 ---
 
-Stage 8: Training Infrastructure
+## Stage 8: Training Infrastructure
 
-Goal
+### Goal
 
 Build everything required for training.
 
-Implement
+**Implement**
+- `CrossEntropyLoss`
+- Gradient clipping
+- Learning rate scheduler
+- Warmup scheduler
+- AdamW
+- Checkpoint saving
+- Checkpoint loading
 
-CrossEntropyLoss
-Gradient Clipping
-Learning Rate Scheduler
-Warmup Scheduler
-AdamW
-Checkpoint Saving
-Checkpoint Loading
+### Verification
 
+**Test 1 — Overfit a single batch**
+Expected: loss approaches zero.
 
----
+**Test 2 — Overfit 100 batches**
+Expected: stable convergence.
 
-Verification
-
-Test 1
-
-Overfit a single batch.
-
-Expected:
-
-Loss approaches zero.
-
-Test 2
-
-Overfit 100 batches.
-
-Expected:
-
-Stable convergence.
-
-Only proceed if both succeed.
-
+Only proceed if both tests succeed.
 
 ---
 
-Stage 9: Dataset Pipeline
+## Stage 9: Dataset Pipeline
 
-Training Progression
+### Training Progression
 
-Phase 1
+| Phase | Dataset | Purpose |
+|---|---|---|
+| 1 | Tiny Shakespeare | Debug training |
+| 2 | WikiText-2 | Validate language modeling |
+| 3 | OpenWebText subset | Intermediate scale training |
+| 4 | Larger datasets | Approach GPT-style training |
 
-Tiny Shakespeare
+### Dataset Components
 
-Purpose:
-
-Debug training.
-
-
----
-
-Phase 2
-
-WikiText-2
-
-Purpose:
-
-Validate language modeling.
-
+- **BPE tokenizer** — implement from scratch
+- **Dataset loader** — implement tokenization, chunking, batch creation, shuffling
 
 ---
 
-Phase 3
+## Stage 10: Scaling Strategy
 
-OpenWebText Subset
-
-Purpose:
-
-Intermediate scale training.
-
-
----
-
-Phase 4
-
-Larger Datasets
-
-Purpose:
-
-Approach GPT-style training.
-
+| Phase | Model | Layers | Hidden Size | Heads | Context Length | Purpose |
+|---|---|---|---|---|---|---|
+| 1 | Mini GPT | 2 | 128 | 4 | — | Fast debugging |
+| 2 | Medium GPT | 6 | 384 | 6 | — | Intermediate validation |
+| 3 | GPT-124M | 12 | 768 | 12 | 1024 | Full target architecture |
 
 ---
 
-Dataset Components
-
-BPE Tokenizer
-
-Implement from scratch.
-
-Dataset Loader
-
-Implement:
-
-Tokenization
-Chunking
-Batch Creation
-Shuffling
-
-
----
-
-Stage 10: Scaling Strategy
-
-Phase 1
-
-Mini GPT
-
-Layers: 2
-Hidden Size: 128
-Heads: 4
-
-Purpose:
-
-Fast debugging.
-
-
----
-
-Phase 2
-
-Medium GPT
-
-Layers: 6
-Hidden Size: 384
-Heads: 6
-
-Purpose:
-
-Intermediate validation.
-
-
----
-
-Phase 3
-
-GPT-124M
-
-Layers: 12
-Hidden Size: 768
-Heads: 12
-Context Length: 1024
-
-Purpose:
-
-Full target architecture.
-
-
----
-
-Testing Philosophy
+## Testing Philosophy
 
 Every component must pass three checks:
 
-Forward Verification
-
-PyTorch Output
-=
-Your Output
-
+1. **Forward Verification** — PyTorch output = your output
+2. **Backward Verification** — PyTorch gradient = your gradient
+3. **Training Verification** — PyTorch training behavior = your training behavior
 
 ---
 
-Backward Verification
+## Recommended Development Order
 
-PyTorch Gradient
-=
-Your Gradient
-
-
----
-
-Training Verification
-
-PyTorch Training Behavior
-=
-Your Training Behavior
-
-
----
-
-Recommended Development Order
-
+```
 Autograd Engine
-↓
+    ↓
 XOR Training
-↓
+    ↓
 NN Framework
-↓
+    ↓
 Optimizers
-↓
+    ↓
 Attention
-↓
+    ↓
 Transformer Block
-↓
+    ↓
 GPT Architecture
-↓
+    ↓
 Weight Loading Verification
-↓
+    ↓
 Training Infrastructure
-↓
+    ↓
 Tiny Shakespeare
-↓
+    ↓
 WikiText-2
-↓
+    ↓
 OpenWebText
-↓
+    ↓
 GPT-124M
-↓
+    ↓
 Scale Beyond 124M
-
+```
 
 ---
 
-Final Deliverables
+## Final Deliverables
 
-Framework
+**Framework**
+- Tensor class
+- Autograd engine
+- Module system
+- Optimizers
+- GPU backend (CuPy)
 
-Tensor Class
+**Model**
+- GPT implementation
+- GPT-124M architecture
+- Weight loader
+- Training pipeline
 
-Autograd Engine
+### Research Skills Gained
 
-Module System
-
-Optimizers
-
-GPU Backend (CuPy)
-
-
-Model
-
-GPT Implementation
-
-GPT-124M Architecture
-
-Weight Loader
-
-Training Pipeline
-
-
-Research Skills Gained
-
-Automatic Differentiation
-
-Backpropagation
-
-Transformer Internals
-
-Attention Mechanisms
-
-Numerical Stability
-
-Optimizer Theory
-
-GPU Computing with CuPy
-
-Training Large Language Models
-
-Framework Design
-
-Model Verification Methodology
+- Automatic differentiation
+- Backpropagation
+- Transformer internals
+- Attention mechanisms
+- Numerical stability
+- Optimizer theory
+- GPU computing with CuPy
+- Training large language models
+- Framework design
+- Model verification methodology
