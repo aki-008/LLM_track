@@ -170,6 +170,12 @@ print(enc_ids)
 import unicodedata
 
 def token_handler(t:bytes):
+    """
+    Convert a byte token to a printable string.
+
+    Decodes the token as UTF-8 and escapes Unicode control characters
+    as ``\\uXXXX``. Used when saving BPE merge files.
+    """    
     s = t.decode('utf-8', errors='replace')
     chars = []
     for ch in s:
