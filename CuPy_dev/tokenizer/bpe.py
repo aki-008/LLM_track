@@ -134,7 +134,7 @@ class BPETokenizer:
             vocab[idx] = vocab[pair[0]] + vocab[pair[1]] 
             if verbose:
                 print(
-                    "merge {i + 1}/{num_merges}: {pair} -> {idx} "
+                    f"merge {i + 1}/{num_merges}: {pair} -> {idx} "
                     f"({vocab[idx]}) had {stats[pair]} occurrences"
                 )     
         self.merges = merges
@@ -142,14 +142,6 @@ class BPETokenizer:
         # Preserves the registered special tokens
         for special, special_idx in self.special_tokens.items():
             self.vocab[special_idx] = special.encode('utf-8')
-
-
-    # def decode(self, ids):
-    #     text = []
-    #     for i in ids:
-    #         text.append(self.vocab[i].decode('utf-8'))
-    #     txt = ''.join(text)
-    #     return txt
 
     def decode(self, ids):
         text = []
@@ -237,8 +229,8 @@ class BPETokenizer:
             for special , idx in self.special_tokens.items():
                 f.write(f'{special} {idx}\n')
 
-            for idx0, idx1 in self.merges:
-                f.write(f'{idx0} {idx1}\n')
+            for p0, p1 in self.merges:
+                f.write(f'{p0} {p1}\n')
 
         vocab_file = file_prefix + ".vocab"
         inverted_merges = {idx: pair for pair , idx in self.merges.items()}
@@ -301,25 +293,29 @@ class BPETokenizer:
 
 def main():
     model = BPETokenizer(pattern=GPT4_SPLIT_PATTERN)
-
-    # %%
     model.train(1024, text, True)
-
-    # %%
     model.register_special_tokens(GPT4_SPECIAL_TOKENS)
-
-    # %%
+    model.save('BPE')
     result = model.encode(sample_text, allowed_special='all')
     print(result)
-
-    # %%
     result = model.decode(result)
     print(result)
-
-    # %%
-    # model.save('bpe')
-
     print("Script Complete")
+    
+    # sample_text = '''The Imperial Russian Navy (Russian: Российский императорский флот) operated as the navy of 
+    # the Russian Tsardom and later the Russian Empire from 1696 to 1917.[c] Formally established in 1696, it lasted
+    # until being dissolved in the wake of the February Revolution and the declaration of the Russian Republic in 
+    # 917. It developed from a smaller force that had existed prior to Tsar Peter the Great's founding of the modern 
+    # Russian navy during the Second Azov campaign in 1696[3], and expanded in the second half of the 18th century 
+    # before reaching its peak strength by the early part of the 19th century, behind only the British and French 
+    # fleets in terms of size.The Imperial Navy drew its officers from the aristocracy of the Empire'''
+
+    # model = BPETokenizerv2(pattern=GPT4_SPLIT_PATTERN)
+    # model.load('model\\bpe.model')
+
+    # ids = model.encode(sample_text)
+    # print(ids)
+    # print(model.decode(ids))
 
 if __name__ == "__main__":
     main()
